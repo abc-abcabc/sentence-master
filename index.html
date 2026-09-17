@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>문장 마스터 PRO - 스마트 영어 문장 완벽 암기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-sub: #f1f5f9;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --primary: #4f46e5;
+      --primary-hover: #3730a3;
+      --primary-light: #eef2ff;
+      --accent: #6366f1;
+      --border: #e2e8f0;
+      --border-focus: #818cf8;
+      --success: #10b981;
+      --success-bg: #ecfdf5;
+      --error: #ef4444;
+      --error-bg: #fef2f2;
+      --warning: #f59e0b;
+      --warning-bg: #fffbeb;
+      --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07), 0 0 1px 1px rgba(0, 0, 0, 0.05);
+      --btn-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.35);
+      --radius: 24px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b0f19;
+      --card-bg: #151c2c;
+      --card-sub: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-light: #1e1b4b;
+      --accent: #818cf8;
+      --border: #334155;
+      --border-focus: #6366f1;
+      --success: #34d399;
+      --success-bg: #064e3b;
+      --error: #f87171;
+      --error-bg: #450a0a;
+      --warning: #fbbf24;
+      --warning-bg: #451a03;
+      --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(255, 255, 255, 0.08);
+      --btn-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease; }
+    body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding: 24px 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow-x: hidden; }
+
+    /* Canvas Confetti */
+    #confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
+
+    .app-container { width: 100%; max-width: 780px; background: var(--card-bg); border-radius: var(--radius); padding: 36px 32px; box-shadow: var(--card-shadow); border: 1px solid var(--border); position: relative; z-index: 10; }
+    @media (max-width: 600px) {
+      .app-container { padding: 24px 18px; border-radius: 20px; }
+      body { padding: 12px 8px; }
+    }
+
+    /* 상단 헤더 & 컨트롤 툴바 */
+    .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .brand-title { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
+    .brand-badge { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #06b6d4); color: white; padding: 3px 8px; border-radius: 8px; text-transform: uppercase; }
+    
+    .header-toolbar { display: flex; align-items: center; gap: 8px; }
+    .tool-btn { background: var(--card-sub); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .tool-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .tool-btn.active { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+    /* 학생 이름 & 불러오기 바 */
+    .student-box { background: var(--card-sub); border: 1.5px solid var(--border); border-radius: 16px; padding: 18px 20px; margin-bottom: 20px; }
+    .name-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .name-input-wrapper { position: relative; flex: 1; min-width: 180px; }
+    .name-input { width: 100%; font-size: 16px; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--card-bg); color: var(--text); outline: none; }
+    .name-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    
+    .recent-names { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; align-items: center; font-size: 13px; color: var(--text-muted); }
+    .recent-chip { background: var(--card-bg); border: 1px solid var(--border); padding: 3px 10px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .recent-chip:hover { border-color: var(--primary); color: var(--primary); }
+
+    .btn-load { background: var(--primary); color: #fff; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; white-space: nowrap; box-shadow: var(--btn-shadow); }
+    .btn-load:hover { background: var(--primary-hover); }
+
+    /* 추천 문장 프리셋 팩 */
+    .presets-container { margin-bottom: 20px; }
+    .preset-label { font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .preset-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+    .preset-btn { background: var(--card-sub); border: 1.5px dashed var(--border); border-radius: 12px; padding: 10px 12px; text-align: left; cursor: pointer; }
+    .preset-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+    .preset-btn .p-title { font-weight: 700; font-size: 14px; color: var(--text); display: block; margin-bottom: 2px; }
+    .preset-btn .p-desc { font-size: 11px; color: var(--text-muted); }
+
+    /* 듀얼 입력창 */
+    .dual-input { display: flex; gap: 16px; margin-bottom: 12px; }
+    .input-col { flex: 1; min-width: 0; }
+    .col-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .col-label { font-weight: 800; color: var(--text); font-size: 15px; display: flex; align-items: center; gap: 6px; }
+    .line-count-badge { font-size: 12px; font-weight: 700; background: var(--card-sub); color: var(--text-muted); padding: 2px 8px; border-radius: 12px; }
+    .line-count-badge.match { background: var(--success-bg); color: var(--success); }
+    .line-count-badge.mismatch { background: var(--error-bg); color: var(--error); }
+
+    @media (max-width: 600px) {
+      .dual-input { flex-direction: column; }
+    }
+
+    .textarea-field { width: 100%; height: 180px; font-size: 15px; line-height: 1.6; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 14px; outline: none; resize: vertical; background: var(--card-bg); color: var(--text); }
+    .textarea-field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .input-hint-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-muted); margin-bottom: 20px; flex-wrap: wrap; gap: 6px; }
+
+    /* 단계 커스텀 선택 영역 */
+    .step-selector-box { background: var(--card-sub); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 24px; }
+    .step-selector-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .step-selector-title { font-weight: 800; font-size: 15px; color: var(--text); }
+    .step-mode-chips { display: flex; gap: 6px; }
+    .mode-chip { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 8px; background: var(--card-bg); border: 1px solid var(--border); cursor: pointer; color: var(--text-muted); }
+    .mode-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .step-checkboxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+    .step-chk-label { display: flex; align-items: center; gap: 8px; background: var(--card-bg); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); font-size: 13px; font-weight: 700; cursor: pointer; }
+    .step-chk-label input { accent-color: var(--primary); width: 16px; height: 16px; }
+
+    /* 플레이어 화면 (Top Meta) */
+    .top-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+    .meta-left { display: flex; align-items: center; gap: 8px; }
+    .meta-right { display: flex; align-items: center; gap: 8px; }
+
+    .sentence-index-pill { background: var(--card-sub); border: 1.5px solid var(--border); font-weight: 800; font-size: 15px; padding: 6px 14px; border-radius: 12px; color: var(--text); }
+    .streak-pill { background: var(--warning-bg); border: 1.5px solid var(--warning); color: #b45309; font-weight: 800; font-size: 14px; padding: 6px 12px; border-radius: 12px; display: none; align-items: center; gap: 4px; }
+    [data-theme="dark"] .streak-pill { color: #fde68a; }
+    .step-badge { background: var(--primary-light); color: var(--primary); font-weight: 800; padding: 6px 16px; border-radius: 9999px; font-size: 16px; border: 1px solid var(--border-focus); }
+
+    /* TTS 컨트롤 버튼 */
+    .btn-tts { background: var(--card-sub); border: 1.5px solid var(--border); color: var(--text); padding: 6px 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-tts:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-tts.speaking { animation: pulseSpeak 1s infinite alternate; border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+    @keyframes pulseSpeak { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+    /* 진행 바 */
+    .progress-bar-wrap { position: relative; margin-bottom: 24px; }
+    .progress-bar { width: 100%; height: 12px; background: var(--card-sub); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #4f46e5, #06b6d4); width: 0%; transition: width 0.35s ease; border-radius: 6px; }
+
+    /* 문제 영역 */
+    .korean-box { font-size: 26px; font-weight: 900; line-height: 1.45; margin-bottom: 10px; text-align: center; color: var(--text); word-break: keep-all; }
+    .guide-text { font-size: 17px; color: var(--text-muted); text-align: center; margin-bottom: 24px; line-height: 1.5; font-weight: 500; }
+    .interactive-area { min-height: 190px; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 20px; width: 100%; }
+
+    /* 퀴즈 UI 요소 */
+    .text-field { width: 100%; max-width: 600px; font-size: 22px; font-weight: 600; padding: 16px 20px; border: 2.5px solid var(--border); border-radius: 16px; outline: none; background: var(--card-bg); color: var(--text); text-align: center; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .text-field:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-light); }
+    
+    .chunk-list { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 650px; }
+    .chunk-item { background: var(--card-sub); border: 2px solid var(--border); border-radius: 14px; padding: 14px 20px; font-size: 22px; font-weight: 700; cursor: pointer; user-select: none; transition: all 0.15s ease; }
+    .chunk-item:hover { transform: translateY(-2px); border-color: var(--primary); }
+    .chunk-item.revealed { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+
+    .word-pool { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 18px; max-width: 650px; }
+    .word-btn { background: var(--card-sub); border: 2px solid var(--border); border-radius: 12px; padding: 10px 18px; font-size: 20px; font-weight: 700; cursor: pointer; color: var(--text); transition: all 0.15s ease; user-select: none; }
+    .word-btn:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--primary); color: var(--primary); }
+    .word-btn:disabled { opacity: 0.25; cursor: not-allowed; transform: none; }
+    
+    .answer-slot { min-height: 64px; border-bottom: 3px dashed var(--border); width: 100%; max-width: 620px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; padding: 8px 0; }
+    .answer-slot:empty::before { content: "단어 카드를 탭하여 순서대로 놓아보세요"; color: var(--text-muted); font-size: 16px; font-weight: 600; }
+
+    .quiz-prompt-text { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 20px; text-align: center; line-height: 1.6; word-break: keep-all; max-width: 620px; }
+    .skeleton-text { letter-spacing: 2px; font-family: monospace; font-size: 23px; }
+    .blank-pill { display: inline-block; background: var(--primary-light); border: 2px solid var(--primary); border-radius: 8px; padding: 0 14px; min-width: 70px; text-align: center; color: var(--primary); font-weight: 800; }
+
+    /* 힌트 & 정답 엿보기 오버레이 */
+    .peek-box { background: var(--warning-bg); border: 1.5px solid var(--warning); border-radius: 12px; padding: 10px 16px; color: #b45309; font-weight: 700; font-size: 16px; text-align: center; margin-bottom: 14px; width: 100%; max-width: 600px; display: none; animation: fadeIn 0.2s ease; }
+    [data-theme="dark"] .peek-box { color: #fde68a; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* 피드백 & 오답 Diff 뷰어 */
+    .feedback-container { min-height: 48px; margin-bottom: 14px; text-align: center; }
+    .feedback { font-size: 18px; font-weight: 800; display: inline-block; padding: 4px 12px; border-radius: 8px; }
+    .feedback.success { color: var(--success); background: var(--success-bg); }
+    .feedback.error { color: var(--error); background: var(--error-bg); }
+
+    .diff-box { margin-top: 8px; font-size: 15px; background: var(--card-sub); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; text-align: left; display: inline-block; max-width: 100%; }
+    .diff-row { margin: 4px 0; font-family: monospace; font-size: 14px; }
+    .diff-label { font-weight: 800; margin-right: 6px; font-family: 'Pretendard', sans-serif; }
+    .diff-highlight { background: rgba(239, 68, 68, 0.2); color: var(--error); text-decoration: underline; font-weight: 800; border-radius: 2px; padding: 0 2px; }
+    .diff-correct { color: var(--success); font-weight: 800; }
+
+    /* 버튼 액션 그룹 */
+    .btn-action { width: 100%; background: var(--primary); color: #fff; border: none; padding: 18px; border-radius: 16px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: var(--btn-shadow); transition: all 0.2s ease; }
+    .btn-action:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-action:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; box-shadow: none; transform: none; }
+
+    .sub-action-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; gap: 8px; flex-wrap: wrap; }
+    .btn-sub-link { background: none; border: none; color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 8px; }
+    .btn-sub-link:hover { background: var(--card-sub); color: var(--text); }
+    .btn-sub-link.danger { color: #f43f5e; }
+
+    /* 최종 결과 뷰 (Stats & Wrong Review) */
+    .result-card { text-align: center; padding: 20px 0; }
+    .trophy-icon { font-size: 72px; margin-bottom: 12px; display: inline-block; animation: bounce 1s infinite alternate; }
+    @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+    
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin: 24px 0; }
+    .stat-box { background: var(--card-sub); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px; text-align: center; }
+    .stat-val { font-size: 28px; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif; }
+    .stat-lbl { font-size: 13px; font-weight: 700; color: var(--text-muted); margin-top: 4px; }
+
+    .wrong-review-section { margin: 20px 0; text-align: left; background: var(--card-sub); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px 20px; }
+    .wrong-title { font-size: 16px; font-weight: 800; color: var(--error); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .wrong-list { list-style: none; display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; }
+    .wrong-item { background: var(--card-bg); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-size: 14px; }
+    .wrong-item .w-eng { font-weight: 700; color: var(--text); }
+    .wrong-item .w-kor { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .result-btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .btn-review-wrong { background: linear-gradient(135deg, #f43f5e, #e11d48); color: white; border: none; padding: 16px; border-radius: 14px; font-size: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35); }
+    .btn-review-wrong:hover { filter: brightness(1.08); }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="app-container">
+  <!-- 상단 공통 헤더 -->
+  <header class="app-header">
+    <div class="brand-title">
+      <span>📖 문장 마스터</span>
+      <span class="brand-badge">PRO</span>
+    </div>
+    <div class="header-toolbar">
+      <button class="tool-btn" id="tts-speed-btn" onclick="toggleTTSSpeed()" title="음성 재생 배속 변경">
+        ⚡ <span id="tts-speed-text">1.0x</span>
+      </button>
+      <button class="tool-btn" id="sound-btn" onclick="toggleSound()" title="효과음 켜기/끄기">
+        🔔 소리 ON
+      </button>
+      <button class="tool-btn" id="theme-btn" onclick="toggleTheme()" title="다크/라이트 테마 변경">
+        🌙
+      </button>
+    </div>
+  </header>
+
+  <!-- [1] 문장 설정 및 시작 화면 -->
+  <div id="setup-view">
+    <div class="student-box">
+      <div class="name-row">
+        <div class="name-input-wrapper">
+          <input type="text" class="name-input" id="student-name" placeholder="학생 이름을 입력하세요 (예: 홍길동)" autocomplete="off" />
+        </div>
+        <button class="btn-load" onclick="loadSavedProgress()">📂 이어하기</button>
+      </div>
+      <div class="recent-names" id="recent-names-row">
+        <span>최근 학생:</span>
+        <div id="recent-chips-list" style="display:inline-flex; gap:6px; flex-wrap:wrap;"></div>
+      </div>
+    </div>
+
+    <!-- 원클릭 추천 문장 팩 -->
+    <div class="presets-container">
+      <div class="preset-label">
+        <span>⚡ 빠른 추천 문장 팩 불러오기</span>
+        <span style="font-size: 12px; font-weight: 500;">클릭 시 자동 입력됩니다</span>
+      </div>
+      <div class="preset-chips">
+        <div class="preset-btn" onclick="loadPreset('daily')">
+          <span class="p-title">🌱 기초 일상 회화</span>
+          <span class="p-desc">자주 쓰는 실생활 10문장</span>
+        </div>
+        <div class="preset-btn" onclick="loadPreset('travel')">
+          <span class="p-title">✈️ 여행 필수 영어</span>
+          <span class="p-desc">공항/식당/길찾기 10문장</span>
+        </div>
+        <div class="preset-btn" onclick="loadPreset('business')">
+          <span class="p-title">💼 비즈니스 & 이메일</span>
+          <span class="p-desc">실무 핵심 패턴 10문장</span>
+        </div>
+        <div class="preset-btn" onclick="loadPreset('movie')">
+          <span class="p-title">🎬 영화 & 감동 명대사</span>
+          <span class="p-desc">기억에 남는 명언 8문장</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 문장 입력 영역 -->
+    <div class="dual-input">
+      <div class="input-col">
+        <div class="col-header">
+          <span class="col-label">1️⃣ 영어 문장</span>
+          <span class="line-count-badge" id="eng-lines-badge">0줄</span>
+        </div>
+        <textarea class="textarea-field" id="english-input" placeholder="I want to go home.&#10;She is my best friend.&#10;It's raining outside."></textarea>
+      </div>
+      <div class="input-col">
+        <div class="col-header">
+          <span class="col-label">2️⃣ 한글 뜻</span>
+          <span class="line-count-badge" id="kor-lines-badge">0줄</span>
+        </div>
+        <textarea class="textarea-field" id="korean-input" placeholder="나는 집에 가고 싶다.&#10;그녀는 나의 가장 친한 친구이다.&#10;밖에 비가 오고 있다."></textarea>
+      </div>
+    </div>
+
+    <div class="input-hint-row">
+      <span>💡 <strong>Tip:</strong> 엑셀에서 영어와 한글 2개 열을 복사해 영어 칸에 붙여넣으면 자동으로 분필됩니다.</span>
+      <button class="btn-sub-link" onclick="clearInputs()">🗑️ 비우기</button>
+    </div>
+
+    <!-- 학습 단계 커스텀 선택 -->
+    <div class="step-selector-box">
+      <div class="step-selector-header">
+        <span class="step-selector-title">🎯 학습 코스 선택</span>
+        <div class="step-mode-chips">
+          <span class="mode-chip active" id="mode-all" onclick="setStepPreset('all')">5단계 전체</span>
+          <span class="mode-chip" id="mode-speed" onclick="setStepPreset('speed')">스피드 3단계</span>
+          <span class="mode-chip" id="mode-master" onclick="setStepPreset('master')">실전 2단계</span>
+        </div>
+      </div>
+      <div class="step-checkboxes">
+        <label class="step-chk-label">
+          <input type="checkbox" id="chk-step-1" checked onchange="updateStepSelection()" /> 1. 끊어읽기
+        </label>
+        <label class="step-chk-label">
+          <input type="checkbox" id="chk-step-2" checked onchange="updateStepSelection()" /> 2. 단어맞추기
+        </label>
+        <label class="step-chk-label">
+          <input type="checkbox" id="chk-step-3" checked onchange="updateStepSelection()" /> 3. 핵심빈칸
+        </label>
+        <label class="step-chk-label">
+          <input type="checkbox" id="chk-step-4" checked onchange="updateStepSelection()" /> 4. 첫글자힌트
+        </label>
+        <label class="step-chk-label">
+          <input type="checkbox" id="chk-step-5" checked onchange="updateStepSelection()" /> 5. 통문장쓰기
+        </label>
+      </div>
+    </div>
+
+    <button class="btn-action" onclick="startBulkLearning()">🚀 스마트 암기 학습 시작하기</button>
+  </div>
+
+  <!-- [2] 학습 플레이어 화면 -->
+  <div id="learn-view" style="display: none;">
+    <div class="top-meta">
+      <div class="meta-left">
+        <div class="sentence-index-pill" id="sentence-counter">문장 1 / 1</div>
+        <div class="streak-pill" id="streak-pill">🔥 <span id="streak-count">0</span>연속 정답!</div>
+      </div>
+      <div class="meta-right">
+        <button class="btn-tts" id="tts-play-btn" onclick="playCurrentTTS()">
+          🔊 <span id="tts-label">듣기</span>
+        </button>
+        <div class="step-badge" id="step-badge">1단계: 끊어 읽기</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="korean-box" id="korean-text"></div>
+    <div class="guide-text" id="guide-text"></div>
+
+    <!-- 힌트 엿보기 박스 -->
+    <div class="peek-box" id="peek-box"></div>
+
+    <div class="interactive-area" id="quiz-area"></div>
+
+    <div class="feedback-container" id="feedback-container">
+      <div class="feedback" id="feedback"></div>
+      <div id="diff-area"></div>
+    </div>
+
+    <button class="btn-action" id="submit-btn">확인</button>
+
+    <div class="sub-action-bar">
+      <button class="btn-sub-link" id="btn-peek" onclick="showHintPeek()">💡 힌트 보기 (2초)</button>
+      <button class="btn-sub-link danger" id="btn-skip" onclick="skipWithAnswer()">👉 정답 확인하고 넘어가기</button>
+      <button class="btn-sub-link" onclick="resetSetup()">🏠 설정으로</button>
+    </div>
+  </div>
+
+  <!-- [3] 학습 완료 및 오답 복습 화면 -->
+  <div id="complete-view" style="display: none;">
+    <div class="result-card">
+      <div class="trophy-icon">🏆</div>
+      <h2 style="font-size: 30px; font-weight: 900; margin-bottom: 8px;">모든 문장 마스터 완료!</h2>
+      <p style="font-size: 17px; color: var(--text-muted); line-height: 1.5;" id="complete-student-msg"></p>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-val" id="stat-total-sentences">0</div>
+          <div class="stat-lbl">총 학습 문장</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-accuracy">100%</div>
+          <div class="stat-lbl">정답률</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="stat-max-streak">0</div>
+          <div class="stat-lbl">최대 연속 콤보</div>
+        </div>
+      </div>
+
+      <!-- 오답 문장 목록 섹션 -->
+      <div class="wrong-review-section" id="wrong-review-box" style="display: none;">
+        <div class="wrong-title">
+          <span>⚠️ 헷갈렸던 문장 모아보기 (<span id="wrong-count-num">0</span>개)</span>
+        </div>
+        <ul class="wrong-list" id="wrong-items-list"></ul>
+      </div>
+
+      <div class="result-btn-group">
+        <button class="btn-review-wrong" id="btn-review-wrong" style="display: none;" onclick="startWrongReviewMode()">
+          🔥 틀린 문장만 집중 복습하기 (<span id="btn-wrong-count">0</span>개)
+        </button>
+        <button class="btn-action" onclick="restartWholeLearning()">🔄 처음부터 다시 학습하기</button>
+        <button class="btn-sub-link" style="justify-content: center; margin-top: 6px;" onclick="resetSetup()">📝 새 문장 등록하러 가기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ==========================================================================
+     1. PRESET DATA (추천 문장 데이터)
+     ========================================================================== */
+  const PRESETS = {
+    daily: {
+      english: [
+        "How have you been lately?",
+        "I'm looking forward to the weekend.",
+        "Could you please give me a hand?",
+        "I need to get some fresh air.",
+        "What do you usually do in your free time?",
+        "Let me know if you need anything.",
+        "It was nice talking to you.",
+        "I didn't mean to make you upset.",
+        "Make yourself at home.",
+        "Practice makes perfect."
+      ],
+      korean: [
+        "요즘 어떻게 지내셨어요?",
+        "주말이 정말 기대돼요.",
+        "저 좀 도와주실 수 있나요?",
+        "바람 좀 쐬고 올게요.",
+        "여가 시간에 주로 뭐 하세요?",
+        "필요한 게 있으면 말씀해 주세요.",
+        "이야기 나눠서 즐거웠습니다.",
+        "기분 상하게 하려던 건 아니었어요.",
+        "편하게 계세요.",
+        "연습하면 완벽해집니다."
+      ]
+    },
+    travel: {
+      english: [
+        "Where is the nearest subway station?",
+        "Could I get a table for two, please?",
+        "Can I pay with a credit card?",
+        "How much does this cost in total?",
+        "Could you take a picture of us?",
+        "I'd like to check in for my flight.",
+        "Is this the right bus for the airport?",
+        "Can you recommend a good local restaurant?",
+        "I have a reservation under the name Min.",
+        "Could you keep my luggage for a few hours?"
+      ],
+      korean: [
+        "가장 가까운 지하철역이 어디인가요?",
+        "2명 자리 부탁드려도 될까요?",
+        "신용카드로 결제할 수 있나요?",
+        "이거 다 합쳐서 얼마인가요?",
+        "저희 사진 한 장만 찍어주시겠어요?",
+        "비행기 탑승 수속을 하고 싶습니다.",
+        "이 버스가 공항 가는 버스 맞나요?",
+        "현지 맛집 하나 추천해 주시겠어요?",
+        "민(Min)이라는 이름으로 예약했습니다.",
+        "몇 시간 동안 짐 좀 맡아주실 수 있나요?"
+      ]
+    },
+    business: {
+      english: [
+        "I'm writing this email to follow up on our meeting.",
+        "Please let me know your availability for this week.",
+        "I have attached the revised project proposal.",
+        "We are pleased to announce our new partnership.",
+        "Could you send me the updated quarterly report?",
+        "I will keep you posted on our progress.",
+        "Thank you for your prompt response.",
+        "Let's schedule a conference call tomorrow.",
+        "We need to meet the project deadline on time.",
+        "Feel free to reach out if you have any questions."
+      ],
+      korean: [
+        "회의 후속 조치 건으로 이메일 드립니다.",
+        "이번 주에 언제 시간 괜찮으신지 알려주세요.",
+        "수정된 프로젝트 제안서를 첨부했습니다.",
+        "새로운 파트너십 소식을 전하게 되어 기쁩니다.",
+        "업데이트된 분기 보고서를 보내주시겠습니까?",
+        "진행 상황을 계속 공유해 드리겠습니다.",
+        "빠른 답변 감사드립니다.",
+        "내일 화상 회의 일정을 잡도록 합시다.",
+        "프로젝트 마감 기한을 제때 맞춰야 합니다.",
+        "궁금한 점이 있으시면 언제든 편하게 연락주세요."
+      ]
+    },
+    movie: {
+      english: [
+        "To infinity and beyond!",
+        "May the Force be with you.",
+        "There's no place like home.",
+        "Keep your friends close, but your enemies closer.",
+        "Life is like a box of chocolates.",
+        "With great power comes great responsibility.",
+        "I'm the king of the world!",
+        "Every cloud has a silver lining."
+      ],
+      korean: [
+        "무한한 공간, 저 너머로!",
+        "포스가 당신과 함께하길.",
+        "집만 한 곳은 없다.",
+        "친구는 가까이 두고, 적은 더 가까이 두어라.",
+        "인생은 초콜릿 상자와 같다.",
+        "큰 힘에는 큰 책임이 따른다.",
+        "나는 세상의 왕이다!",
+        "괴로운 일 뒤에는 반드시 좋은 일이 있다."
+      ]
+    }
+  };
+
+  /* ==========================================================================
+     2. AUDIO & TTS ENGINE (Web Audio API & Speech Synthesis)
+     ========================================================================== */
+  class SoundEngine {
+    constructor() {
+      this.ctx = null;
+      this.isMuted = false;
+    }
+
+    init() {
+      if (!this.ctx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) this.ctx = new AudioCtx();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+    }
+
+    playTone(freq, type, duration, delay = 0) {
+      if (this.isMuted) return;
+      this.init();
+      if (!this.ctx) return;
+
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const startTime = this.ctx.currentTime + delay;
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, startTime);
+
+      gain.gain.setValueAtTime(0.15, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    }
+
+    playCorrect() {
+      this.playTone(523.25, 'sine', 0.12, 0);       // C5
+      this.playTone(659.25, 'sine', 0.15, 0.08);    // E5
+      this.playTone(783.99, 'sine', 0.25, 0.16);    // G5
+    }
+
+    playWrong() {
+      this.playTone(311.13, 'sawtooth', 0.18, 0);   // Eb4
+      this.playTone(261.63, 'sawtooth', 0.25, 0.12); // C4
+    }
+
+    playCombo() {
+      this.playTone(523.25, 'triangle', 0.1, 0);
+      this.playTone(659.25, 'triangle', 0.1, 0.06);
+      this.playTone(783.99, 'triangle', 0.1, 0.12);
+      this.playTone(1046.50, 'triangle', 0.3, 0.18);
+    }
+
+    playVictory() {
+      const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        this.playTone(freq, 'sine', 0.2, idx * 0.12);
+      });
+    }
+  }
+
+  const sound = new SoundEngine();
+
+  // TTS Engine
+  let ttsSpeed = 1.0;
+  const speeds = [0.8, 1.0, 1.2];
+  let currentSpeedIdx = 1;
+
+  function toggleTTSSpeed() {
+    currentSpeedIdx = (currentSpeedIdx + 1) % speeds.length;
+    ttsSpeed = speeds[currentSpeedIdx];
+    document.getElementById('tts-speed-text').textContent = `${ttsSpeed.toFixed(1)}x`;
+  }
+
+  function toggleSound() {
+    sound.isMuted = !sound.isMuted;
+    const btn = document.getElementById('sound-btn');
+    if (sound.isMuted) {
+      btn.textContent = '🔕 소리 OFF';
+      btn.classList.remove('active');
+    } else {
+      btn.textContent = '🔔 소리 ON';
+      btn.classList.add('active');
+      sound.playCorrect();
+    }
+  }
+
+  function playCurrentTTS() {
+    if (!('speechSynthesis' in window)) {
+      alert('이 브라우저는 음성 합성을 지원하지 않습니다.');
+      return;
+    }
+    if (!sentenceList || sentenceList.length === 0) return;
+    const currentData = sentenceList[currentSentenceIndex];
+    if (!currentData) return;
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(currentData.english);
+    utterance.lang = 'en-US';
+    utterance.rate = ttsSpeed;
+
+    const ttsBtn = document.getElementById('tts-play-btn');
+    const ttsLabel = document.getElementById('tts-label');
+
+    utterance.onstart = () => {
+      ttsBtn.classList.add('speaking');
+      ttsLabel.textContent = '재생 중...';
+    };
+    utterance.onend = () => {
+      ttsBtn.classList.remove('speaking');
+      ttsLabel.textContent = '듣기';
+    };
+    utterance.onerror = () => {
+      ttsBtn.classList.remove('speaking');
+      ttsLabel.textContent = '듣기';
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  /* ==========================================================================
+     3. CANVAS CONFETTI (폭죽 애니메이션)
+     ========================================================================== */
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const colors = ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'];
+
+    for (let i = 0; i < 120; i++) {
+      particles.push({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 22,
+        vy: (Math.random() - 0.7) * 24,
+        size: Math.random() * 8 + 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 10,
+        alpha: 1,
+        gravity: 0.45
+      });
+    }
+
+    let animId;
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let aliveCount = 0;
+
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.rotation += p.rotSpeed;
+        p.alpha -= 0.008;
+
+        if (p.alpha > 0) {
+          aliveCount++;
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.4);
+          ctx.restore();
+        }
+      });
+
+      if (aliveCount > 0) {
+        animId = requestAnimationFrame(render);
+      } else {
+        cancelAnimationFrame(animId);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    render();
+  }
+
+  /* ==========================================================================
+     4. APP STATE & LOCAL STORAGE
+     ========================================================================== */
+  let sentenceList = [];
+  let currentSentenceIndex = 0;
+  let activeSteps = [1, 2, 3, 4, 5];
+  let currentStepPointer = 0; // index in activeSteps
+  let selectedWords = [];
+  let studentName = "";
+  let streak = 0;
+  let maxStreak = 0;
+  let totalAttempts = 0;
+  let wrongAttempts = 0;
+  let wrongSentenceIndices = new Set();
+  let isWrongReviewMode = false;
+  let originalFullSentenceList = [];
+
+  const setupView = document.getElementById("setup-view");
+  const learnView = document.getElementById("learn-view");
+  const completeView = document.getElementById("complete-view");
+  const sentenceCounterEl = document.getElementById("sentence-counter");
+  const stepBadgeEl = document.getElementById("step-badge");
+  const progressFill = document.getElementById("progress-fill");
+  const koreanEl = document.getElementById("korean-text");
+  const guideEl = document.getElementById("guide-text");
+  const quizArea = document.getElementById("quiz-area");
+  const feedbackEl = document.getElementById("feedback");
+  const diffArea = document.getElementById("diff-area");
+  const submitBtn = document.getElementById("submit-btn");
+  const nameInput = document.getElementById("student-name");
+  const englishInput = document.getElementById("english-input");
+  const koreanInput = document.getElementById("korean-input");
+  const engLinesBadge = document.getElementById("eng-lines-badge");
+  const korLinesBadge = document.getElementById("kor-lines-badge");
+  const streakPill = document.getElementById("streak-pill");
+  const streakCount = document.getElementById("streak-count");
+  const peekBox = document.getElementById("peek-box");
+
+  // 테마 토글
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const target = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', target);
+    document.getElementById('theme-btn').textContent = target === 'dark' ? '☀️' : '🌙';
+    localStorage.setItem('sentence_master_theme', target);
+  }
+
+  // 테마 초기화
+  (function initTheme() {
+    const savedTheme = localStorage.getItem('sentence_master_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-btn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  })();
+
+  // 줄 수 카운트 & 스마트 클립보드 파싱
+  function updateLineCounts() {
+    const engLines = englishInput.value.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+    const korLines = koreanInput.value.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+
+    engLinesBadge.textContent = `${engLines.length}줄`;
+    korLinesBadge.textContent = `${korLines.length}줄`;
+
+    if (engLines.length === 0 && korLines.length === 0) {
+      engLinesBadge.className = "line-count-badge";
+      korLinesBadge.className = "line-count-badge";
+    } else if (engLines.length === korLines.length) {
+      engLinesBadge.className = "line-count-badge match";
+      korLinesBadge.className = "line-count-badge match";
+    } else {
+      engLinesBadge.className = "line-count-badge mismatch";
+      korLinesBadge.className = "line-count-badge mismatch";
+    }
+  }
+
+  englishInput.addEventListener('input', () => {
+    // 엑셀 붙여넣기 자동 감지 (탭 구분자 \t 가 포함된 경우 자동 분필)
+    const val = englishInput.value;
+    if (val.includes('\t') && koreanInput.value.trim() === '') {
+      const lines = val.split('\n');
+      const engs = [];
+      const kors = [];
+      lines.forEach(line => {
+        const parts = line.split('\t');
+        if (parts.length >= 2) {
+          engs.push(parts[0].trim());
+          kors.push(parts[1].trim());
+        } else if (line.trim().length > 0) {
+          engs.push(line.trim());
+        }
+      });
+      if (kors.length > 0) {
+        englishInput.value = engs.join('\n');
+        koreanInput.value = kors.join('\n');
+      }
+    }
+    updateLineCounts();
+  });
+  koreanInput.addEventListener('input', updateLineCounts);
+
+  function clearInputs() {
+    if (confirm('입력한 문장을 모두 지우시겠습니까?')) {
+      englishInput.value = '';
+      koreanInput.value = '';
+      updateLineCounts();
+    }
+  }
+
+  // 프리셋 로드
+  function loadPreset(key) {
+    const p = PRESETS[key];
+    if (!p) return;
+    englishInput.value = p.english.join('\n');
+    koreanInput.value = p.korean.join('\n');
+    updateLineCounts();
+  }
+
+  // 최근 학생 리스트
+  function getRecentStudents() {
+    try {
+      return JSON.parse(localStorage.getItem('sentence_master_recent_students') || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function addRecentStudent(name) {
+    if (!name) return;
+    let list = getRecentStudents().filter(n => n !== name);
+    list.unshift(name);
+    if (list.length > 5) list = list.slice(0, 5);
+    localStorage.setItem('sentence_master_recent_students', JSON.stringify(list));
+    renderRecentStudents();
+  }
+
+  function renderRecentStudents() {
+    const list = getRecentStudents();
+    const container = document.getElementById('recent-chips-list');
+    container.innerHTML = '';
+    list.forEach(n => {
+      const span = document.createElement('span');
+      span.className = 'recent-chip';
+      span.textContent = n;
+      span.onclick = () => {
+        nameInput.value = n;
+      };
+      container.appendChild(span);
+    });
+  }
+  renderRecentStudents();
+
+  // 단계 프리셋 선택
+  function setStepPreset(mode) {
+    document.querySelectorAll('.mode-chip').forEach(c => c.classList.remove('active'));
+    document.getElementById(`mode-${mode}`).classList.add('active');
+
+    const chks = [1, 2, 3, 4, 5].map(i => document.getElementById(`chk-step-${i}`));
+    if (mode === 'all') {
+      chks.forEach(c => c.checked = true);
+    } else if (mode === 'speed') {
+      chks[0].checked = false; // 1 skip
+      chks[1].checked = true;  // 2 word
+      chks[2].checked = true;  // 3 cloze
+      chks[3].checked = false; // 4 skip
+      chks[4].checked = true;  // 5 full
+    } else if (mode === 'master') {
+      chks[0].checked = false;
+      chks[1].checked = false;
+      chks[2].checked = false;
+      chks[3].checked = true;  // 4 skeleton
+      chks[4].checked = true;  // 5 full
+    }
+    updateStepSelection();
+  }
+
+  function updateStepSelection() {
+    const selected = [];
+    for (let i = 1; i <= 5; i++) {
+      if (document.getElementById(`chk-step-${i}`).checked) {
+        selected.push(i);
+      }
+    }
+    if (selected.length === 0) {
+      alert('최소 1개 이상의 학습 단계를 선택해야 합니다.');
+      document.getElementById('chk-step-5').checked = true;
+      selected.push(5);
+    }
+    activeSteps = selected;
+  }
+
+  // 저장 키
+  function storageKey(name) {
+    return `sentence_master_progress_${name}`;
+  }
+
+  function saveProgress() {
+    if (!studentName) return;
+    const data = {
+      englishLines: sentenceList.map(s => s.english),
+      koreanLines: sentenceList.map(s => s.korean),
+      currentSentenceIndex,
+      currentStepPointer,
+      activeSteps,
+      streak,
+      maxStreak,
+      totalAttempts,
+      wrongAttempts,
+      wrongSentenceIndices: Array.from(wrongSentenceIndices),
+      savedAt: Date.now()
+    };
+    try {
+      localStorage.setItem(storageKey(studentName), JSON.stringify(data));
+    } catch (e) {
+      console.error("저장 실패:", e);
+    }
+  }
+
+  function loadSavedProgress() {
+    const name = nameInput.value.trim();
+    if (!name) {
+      alert("이름을 먼저 입력해주세요.");
+      nameInput.focus();
+      return;
+    }
+
+    let raw;
+    try {
+      raw = localStorage.getItem(storageKey(name));
+    } catch (e) {
+      raw = null;
+    }
+
+    if (!raw) {
+      alert(`${name}님의 저장된 학습 기록이 없습니다. 문장을 입력하고 시작해주세요.`);
+      return;
+    }
+
+    try {
+      const data = JSON.parse(raw);
+      const engLines = data.englishLines || [];
+      const korLines = data.koreanLines || [];
+
+      englishInput.value = engLines.join("\n");
+      koreanInput.value = korLines.join("\n");
+      updateLineCounts();
+
+      const list = buildSentenceList(engLines, korLines);
+      if (list.length === 0) {
+        alert("저장된 문장을 불러오지 못했습니다.");
+        return;
+      }
+
+      studentName = name;
+      sentenceList = list;
+      originalFullSentenceList = [...list];
+      activeSteps = data.activeSteps && data.activeSteps.length > 0 ? data.activeSteps : [1, 2, 3, 4, 5];
+      currentSentenceIndex = Math.min(data.currentSentenceIndex || 0, sentenceList.length - 1);
+      currentStepPointer = Math.min(data.currentStepPointer || 0, activeSteps.length - 1);
+      streak = data.streak || 0;
+      maxStreak = data.maxStreak || 0;
+      totalAttempts = data.totalAttempts || 0;
+      wrongAttempts = data.wrongAttempts || 0;
+      wrongSentenceIndices = new Set(data.wrongSentenceIndices || []);
+
+      setupView.style.display = "none";
+      completeView.style.display = "none";
+      learnView.style.display = "block";
+      renderCurrentState();
+    } catch (e) {
+      alert("저장된 기록을 불러오는 중 오류가 발생했습니다.");
+    }
+  }
+
+  /* ==========================================================================
+     5. SENTENCE PARSING UTILS
+     ========================================================================= */
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  }
+
+  function generateChunks(sentence) {
+    const tokens = sentence.split(/\s+/);
+    const chunks = [];
+    let i = 0;
+    while (i < tokens.length) {
+      const remaining = tokens.length - i;
+      let take = 2;
+      if (remaining === 4) take = 2;
+      else if (remaining === 3 || remaining === 1) take = remaining;
+      chunks.push(tokens.slice(i, i + take).join(" "));
+      i += take;
+    }
+    return chunks;
+  }
+
+  function setupCloze(sentence) {
+    const tokens = sentence.split(/\s+/);
+    let bestIdx = 0;
+    let maxLen = 0;
+
+    tokens.forEach((t, i) => {
+      const clean = t.replace(/[.,?!]/g, "");
+      if (clean.length >= 3 && clean.length > maxLen) {
+        maxLen = clean.length;
+        bestIdx = i;
+      }
+    });
+
+    const chosen = tokens[bestIdx];
+    const match = chosen.match(/^([A-Za-z0-9']+)([.,?!]*)$/);
+    const targetClean = match ? match[1] : chosen.replace(/[.,?!]/g, "");
+    const trailingPunct = match ? match[2] : "";
+
+    const copy = [...tokens];
+    copy[bestIdx] = `[___]${trailingPunct}`;
+
+    return { target: targetClean, sentence: copy.join(" ") };
+  }
+
+  function generateSkeleton(sentence) {
+    return sentence.split(" ").map(token => {
+      let firstLetterSeen = false;
+      return token.replace(/[A-Za-z]/g, ch => {
+        if (!firstLetterSeen) {
+          firstLetterSeen = true;
+          return ch;
+        }
+        return "_";
+      });
+    }).join(" ");
+  }
+
+  function buildSentenceList(engLines, korLines) {
+    const list = [];
+    const len = Math.min(engLines.length, korLines.length);
+
+    for (let i = 0; i < len; i++) {
+      const eng = (engLines[i] || "").trim();
+      const kor = (korLines[i] || "").trim();
+      if (!eng || !kor) continue;
+
+      const cloze = setupCloze(eng);
+      list.push({
+        english: eng,
+        korean: kor,
+        cleanWords: eng.replace(/[.,?!]/g, "").split(/\s+/),
+        chunks: generateChunks(eng),
+        clozeTarget: cloze.target,
+        clozeSentence: cloze.sentence,
+        skeleton: generateSkeleton(eng)
+      });
+    }
+    return list;
+  }
+
+  /* ==========================================================================
+     6. SMART DIFF & ERROR COMPARISON
+     ========================================================================== */
+  function renderErrorDiff(expected, actual) {
+    const expWords = expected.split(/\s+/);
+    const actWords = actual.split(/\s+/);
+
+    let diffHtml = '<div class="diff-box">';
+    diffHtml += `<div class="diff-row"><span class="diff-label">내가 쓴 답:</span>`;
+    
+    actWords.forEach((word, idx) => {
+      const targetWord = expWords[idx];
+      if (!targetWord || targetWord.toLowerCase() !== word.toLowerCase()) {
+        diffHtml += `<span class="diff-highlight">${escapeHtml(word)}</span> `;
+      } else {
+        diffHtml += `<span>${escapeHtml(word)}</span> `;
+      }
+    });
+    diffHtml += '</div>';
+
+    diffHtml += `<div class="diff-row"><span class="diff-label">올바른 정답:</span><span class="diff-correct">${escapeHtml(expected)}</span></div>`;
+    diffHtml += '</div>';
+
+    return diffHtml;
+  }
+
+  /* ==========================================================================
+     7. LEARNING FLOW & UI RENDERING
+     ========================================================================== */
+  function startBulkLearning() {
+    const name = nameInput.value.trim();
+    if (!name) {
+      alert("이름을 입력해주세요.");
+      nameInput.focus();
+      return;
+    }
+
+    const engLines = englishInput.value.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+    const korLines = koreanInput.value.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+
+    if (engLines.length === 0 || korLines.length === 0) {
+      alert("영어 문장 칸과 한글 뜻 칸을 모두 입력해주세요.");
+      return;
+    }
+
+    if (engLines.length !== korLines.length) {
+      alert(`영어 문장(${engLines.length}줄)과 한글 뜻(${korLines.length}줄)의 줄 수가 다릅니다.\n같은 줄 수로 맞춰주세요.`);
+      return;
+    }
+
+    updateStepSelection();
+    const list = buildSentenceList(engLines, korLines);
+    if (list.length === 0) {
+      alert("입력된 문장을 확인해주세요.");
+      return;
+    }
+
+    studentName = name;
+    addRecentStudent(name);
+    sentenceList = list;
+    originalFullSentenceList = [...list];
+    currentSentenceIndex = 0;
+    currentStepPointer = 0;
+    streak = 0;
+    maxStreak = 0;
+    totalAttempts = 0;
+    wrongAttempts = 0;
+    wrongSentenceIndices.clear();
+    isWrongReviewMode = false;
+
+    setupView.style.display = "none";
+    completeView.style.display = "none";
+    learnView.style.display = "block";
+    saveProgress();
+    renderCurrentState();
+  }
+
+  function resetSetup() {
+    setupView.style.display = "block";
+    learnView.style.display = "none";
+    completeView.style.display = "none";
+    peekBox.style.display = "none";
+  }
+
+  function renderCurrentState() {
+    const currentData = sentenceList[currentSentenceIndex];
+    if (!currentData) return;
+
+    const currentStepNumber = activeSteps[currentStepPointer];
+
+    feedbackEl.textContent = "";
+    feedbackEl.className = "feedback";
+    diffArea.innerHTML = "";
+    peekBox.style.display = "none";
+
+    // Streak UI
+    if (streak >= 2) {
+      streakPill.style.display = "inline-flex";
+      streakCount.textContent = streak;
+    } else {
+      streakPill.style.display = "none";
+    }
+
+    sentenceCounterEl.textContent = `문장 ${currentSentenceIndex + 1} / ${sentenceList.length}`;
+    koreanEl.textContent = currentData.korean;
+
+    // Progress Calculation
+    const totalStepsAcrossAll = sentenceList.length * activeSteps.length;
+    const completedSteps = (currentSentenceIndex * activeSteps.length) + currentStepPointer;
+    progressFill.style.width = `${Math.min(100, (completedSteps / totalStepsAcrossAll) * 100)}%`;
+
+    // 1단계: 끊어 읽기
+    if (currentStepNumber === 1) {
+      stepBadgeEl.textContent = "1단계: 끊어 읽기";
+      guideEl.textContent = "의미 덩어리 카드를 터치하며 문장 구조를 소리 내어 익혀보세요.";
+      quizArea.innerHTML = `<div class="chunk-list" id="chunk-list"></div>`;
+      const chunkListEl = document.getElementById("chunk-list");
+      currentData.chunks.forEach(chunk => {
+        const div = document.createElement("div");
+        div.className = "chunk-item";
+        div.textContent = chunk;
+        div.addEventListener("click", () => {
+          div.classList.toggle("revealed");
+          sound.init();
+        });
+        chunkListEl.appendChild(div);
+      });
+      submitBtn.textContent = "확인 완료, 다음 단계로 (Enter)";
+      submitBtn.disabled = false;
+    }
+    // 2단계: 단어 맞추기
+    else if (currentStepNumber === 2) {
+      stepBadgeEl.textContent = "2단계: 단어 맞추기";
+      guideEl.textContent = "단어 카드를 순서대로 탭하여 올바른 문장을 만드세요.";
+      selectedWords = [];
+      const shuffled = [...currentData.cleanWords].sort(() => Math.random() - 0.5);
+
+      quizArea.innerHTML = `<div class="answer-slot" id="slot"></div><div class="word-pool" id="pool"></div>`;
+      const poolEl = document.getElementById("pool");
+      shuffled.forEach(word => {
+        const btn = document.createElement("button");
+        btn.className = "word-btn";
+        btn.textContent = word;
+        btn.addEventListener("click", () => selectWord(btn, word));
+        poolEl.appendChild(btn);
+      });
+
+      submitBtn.textContent = "정답 확인 (Enter)";
+      submitBtn.disabled = false;
+    }
+    // 3단계: 핵심 빈칸
+    else if (currentStepNumber === 3) {
+      stepBadgeEl.textContent = "3단계: 핵심 빈칸";
+      guideEl.textContent = "문장의 빈칸 [ ? ] 에 들어갈 알맞은 단어를 입력하세요.";
+      const displaySentence = escapeHtml(currentData.clozeSentence).replace("[___]", '<span class="blank-pill">?</span>');
+      quizArea.innerHTML = `
+        <div class="quiz-prompt-text">${displaySentence}</div>
+        <input type="text" class="text-field" id="text-input" placeholder="빈칸 단어 입력" autofocus autocomplete="off" />
+      `;
+      submitBtn.textContent = "빈칸 확인 (Enter)";
+      submitBtn.disabled = false;
+      attachInputEnterListener();
+    }
+    // 4단계: 첫 글자 힌트
+    else if (currentStepNumber === 4) {
+      stepBadgeEl.textContent = "4단계: 첫 글자 힌트";
+      guideEl.textContent = "첫 글자 초성을 보고 전체 문장을 입력하세요.";
+      quizArea.innerHTML = `
+        <div class="quiz-prompt-text skeleton-text">${escapeHtml(currentData.skeleton)}</div>
+        <input type="text" class="text-field" id="text-input" placeholder="문장 전체 입력" autofocus autocomplete="off" />
+      `;
+      submitBtn.textContent = "힌트 완성 확인 (Enter)";
+      submitBtn.disabled = false;
+      attachInputEnterListener();
+    }
+    // 5단계: 통문장 타이핑
+    else if (currentStepNumber === 5) {
+      stepBadgeEl.textContent = "5단계: 통문장 타이핑";
+      guideEl.textContent = "힌트 없이 우리말 뜻만 보고 영어 문장 전체를 입력하세요.";
+      quizArea.innerHTML = `
+        <input type="text" class="text-field" id="text-input" placeholder="영어 문장 전체 입력" autofocus autocomplete="off" />
+      `;
+      submitBtn.textContent = "문장 최종 통과 (Enter)";
+      submitBtn.disabled = false;
+      attachInputEnterListener();
+    }
+
+    // 1단계일 때 자동 발음 재생
+    if (currentStepNumber === 1) {
+      playCurrentTTS();
+    }
+  }
+
+  function attachInputEnterListener() {
+    setTimeout(() => {
+      const input = document.getElementById("text-input");
+      if (input) {
+        input.focus();
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleSubmitAction();
+          }
+        });
+      }
+    }, 50);
+  }
+
+  function selectWord(btn, word) {
+    sound.init();
+    selectedWords.push(word);
+    btn.disabled = true;
+    const slot = document.getElementById("slot");
+    const span = document.createElement("button");
+    span.className = "word-btn";
+    span.textContent = word;
+    span.addEventListener("click", () => {
+      slot.removeChild(span);
+      btn.disabled = false;
+      const index = selectedWords.lastIndexOf(word);
+      if (index > -1) selectedWords.splice(index, 1);
+    });
+    slot.appendChild(span);
+  }
+
+  // 힌트 보기 (2초간 정답 미리보기)
+  function showHintPeek() {
+    const currentData = sentenceList[currentSentenceIndex];
+    if (!currentData) return;
+
+    peekBox.textContent = `💡 정답 힌트: ${currentData.english}`;
+    peekBox.style.display = "block";
+    wrongSentenceIndices.add(currentSentenceIndex);
+
+    setTimeout(() => {
+      peekBox.style.display = "none";
+    }, 2500);
+  }
+
+  // 스킵 및 정답 보고 넘어가기
+  function skipWithAnswer() {
+    const currentData = sentenceList[currentSentenceIndex];
+    if (!currentData) return;
+
+    wrongSentenceIndices.add(currentSentenceIndex);
+    wrongAttempts++;
+    streak = 0;
+    sound.playWrong();
+
+    feedbackEl.textContent = `👉 정답: ${currentData.english}`;
+    feedbackEl.className = "feedback error";
+
+    const input = document.getElementById("text-input");
+    if (input) {
+      input.value = (activeSteps[currentStepPointer] === 3) ? currentData.clozeTarget : currentData.english;
+    }
+
+    setTimeout(() => {
+      advanceNextStep();
+    }, 1500);
+  }
+
+  // 제출 버튼 클릭 및 엔터 핸들러
+  submitBtn.addEventListener("click", handleSubmitAction);
+  document.addEventListener("keydown", (e) => {
+    if (learnView.style.display === "block" && e.key === "Enter") {
+      const activeEl = document.activeElement;
+      if (!activeEl || activeEl.tagName !== "INPUT") {
+        handleSubmitAction();
+      }
+    }
+  });
+
+  function handleSubmitAction() {
+    if (submitBtn.disabled) return;
+    totalAttempts++;
+    const currentData = sentenceList[currentSentenceIndex];
+    const currentStepNumber = activeSteps[currentStepPointer];
+
+    if (currentStepNumber === 1) {
+      advanceNextStep();
+    }
+    else if (currentStepNumber === 2) {
+      const target = currentData.cleanWords.join(" ").trim();
+      const current = selectedWords.join(" ").trim();
+      if (target === current) {
+        handleSuccess("정답입니다! 단어 순서를 완벽히 맞췄어요.");
+      } else {
+        handleFail("단어 배열 순서가 맞지 않습니다. 다시 탭하여 맞춰보세요.", currentData.english, current);
+      }
+    }
+    else if (currentStepNumber === 3) {
+      const inputEl = document.getElementById("text-input");
+      const input = (inputEl ? inputEl.value : "").trim();
+      if (input.toLowerCase() === currentData.clozeTarget.toLowerCase()) {
+        handleSuccess("정답입니다! 핵심 단어를 통과했습니다.");
+      } else {
+        handleFail("빈칸 단어가 일치하지 않습니다.", currentData.clozeTarget, input);
+      }
+    }
+    else if (currentStepNumber === 4 || currentStepNumber === 5) {
+      const inputEl = document.getElementById("text-input");
+      const input = (inputEl ? inputEl.value : "").trim().replace(/[.,?!]/g, "");
+      const target = currentData.english.trim().replace(/[.,?!]/g, "");
+
+      if (input.toLowerCase() === target.toLowerCase()) {
+        if (currentStepPointer === activeSteps.length - 1) {
+          handleSentenceComplete();
+        } else {
+          handleSuccess("대단해요! 이제 마지막 관문입니다.");
+        }
+      } else {
+        handleFail("철자나 띄어쓰기, 어퍼스트로피(')를 확인해보세요.", currentData.english, (inputEl ? inputEl.value : ""));
+      }
+    }
+  }
+
+  function handleSuccess(msg) {
+    streak++;
+    if (streak > maxStreak) maxStreak = streak;
+
+    if (streak >= 3) {
+      sound.playCombo();
+    } else {
+      sound.playCorrect();
+    }
+
+    feedbackEl.textContent = msg;
+    feedbackEl.className = "feedback success";
+    diffArea.innerHTML = "";
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+      advanceNextStep();
+    }, 900);
+  }
+
+  function handleFail(msg, target, userVal) {
+    streak = 0;
+    wrongAttempts++;
+    wrongSentenceIndices.add(currentSentenceIndex);
+    sound.playWrong();
+
+    feedbackEl.textContent = msg;
+    feedbackEl.className = "feedback error";
+
+    if (target && userVal) {
+      diffArea.innerHTML = renderErrorDiff(target, userVal);
+    }
+  }
+
+  function advanceNextStep() {
+    submitBtn.disabled = false;
+    if (currentStepPointer + 1 < activeSteps.length) {
+      currentStepPointer++;
+      saveProgress();
+      renderCurrentState();
+    } else {
+      handleSentenceComplete();
+    }
+  }
+
+  function handleSentenceComplete() {
+    feedbackEl.textContent = "🎉 문장 암기 통과!";
+    feedbackEl.className = "feedback success";
+    diffArea.innerHTML = "";
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      if (currentSentenceIndex + 1 < sentenceList.length) {
+        currentSentenceIndex++;
+        currentStepPointer = 0;
+        saveProgress();
+        renderCurrentState();
+      } else {
+        saveProgress();
+        showFinalClear();
+      }
+    }, 1100);
+  }
+
+  /* ==========================================================================
+     8. FINAL CLEAR & WRONG REVIEW
+     ========================================================================== */
+  function showFinalClear() {
+    progressFill.style.width = "100%";
+    learnView.style.display = "none";
+    completeView.style.display = "block";
+
+    sound.playVictory();
+    launchConfetti();
+
+    document.getElementById("complete-student-msg").textContent =
+      `${studentName}님이 총 ${sentenceList.length}개의 영어 문장을 성공적으로 학습 완료했습니다!`;
+
+    document.getElementById("stat-total-sentences").textContent = sentenceList.length;
+    const acc = totalAttempts > 0 ? Math.round(((totalAttempts - wrongAttempts) / totalAttempts) * 100) : 100;
+    document.getElementById("stat-accuracy").textContent = `${Math.max(0, acc)}%`;
+    document.getElementById("stat-max-streak").textContent = maxStreak;
+
+    // 오답 리스트 표시
+    const wrongBox = document.getElementById("wrong-review-box");
+    const wrongListEl = document.getElementById("wrong-items-list");
+    const btnReviewWrong = document.getElementById("btn-review-wrong");
+
+    if (wrongSentenceIndices.size > 0) {
+      wrongBox.style.display = "block";
+      btnReviewWrong.style.display = "block";
+      document.getElementById("wrong-count-num").textContent = wrongSentenceIndices.size;
+      document.getElementById("btn-wrong-count").textContent = wrongSentenceIndices.size;
+
+      wrongListEl.innerHTML = "";
+      wrongSentenceIndices.forEach(idx => {
+        const item = sentenceList[idx] || originalFullSentenceList[idx];
+        if (item) {
+          const li = document.createElement("li");
+          li.className = "wrong-item";
+          li.innerHTML = `<div class="w-eng">${escapeHtml(item.english)}</div><div class="w-kor">${escapeHtml(item.korean)}</div>`;
+          wrongListEl.appendChild(li);
+        }
+      });
+    } else {
+      wrongBox.style.display = "none";
+      btnReviewWrong.style.display = "none";
+    }
+  }
+
+  function startWrongReviewMode() {
+    const wrongList = [];
+    wrongSentenceIndices.forEach(idx => {
+      const item = sentenceList[idx] || originalFullSentenceList[idx];
+      if (item) wrongList.push(item);
+    });
+
+    if (wrongList.length === 0) return;
+
+    sentenceList = wrongList;
+    currentSentenceIndex = 0;
+    currentStepPointer = 0;
+    streak = 0;
+    wrongSentenceIndices.clear();
+    isWrongReviewMode = true;
+
+    completeView.style.display = "none";
+    learnView.style.display = "block";
+    renderCurrentState();
+  }
+
+  function restartWholeLearning() {
+    sentenceList = [...originalFullSentenceList];
+    currentSentenceIndex = 0;
+    currentStepPointer = 0;
+    streak = 0;
+    wrongSentenceIndices.clear();
+    isWrongReviewMode = false;
+
+    completeView.style.display = "none";
+    learnView.style.display = "block";
+    renderCurrentState();
+  }
+</script>
+</body>
+</html>
