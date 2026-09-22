@@ -1779,7 +1779,11 @@ function doGet(e) {
   const DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbxlSG91HTcTMvr9NbYXSnDs4K-PgoGvN0JbVYy9Q5KD_8lJnruMu4Wg8lbNh60lWpDcRA/exec";
 
   function getSavedSheetUrl() {
-    return localStorage.getItem("sentence_master_sheet_url") || DEFAULT_SHEET_URL;
+    const saved = localStorage.getItem("sentence_master_sheet_url");
+    if (saved && typeof saved === "string" && saved.trim().startsWith("https://")) {
+      return saved.trim();
+    }
+    return DEFAULT_SHEET_URL;
   }
 
   function updateSheetUiStatus() {
