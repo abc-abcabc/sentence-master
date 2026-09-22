@@ -1775,8 +1775,11 @@ function doGet(e) {
 
   let lastCompletedPayload = null;
 
+  // 선생님 전용 기본 구글 시트 연동 Webhook URL
+  const DEFAULT_SHEET_URL = "https://script.google.com/macros/s/AKfycbxlSG91HTcTMvr9NbYXSnDs4K-PgoGvN0JbVYy9Q5KD_8lJnruMu4Wg8lbNh60lWpDcRA/exec";
+
   function getSavedSheetUrl() {
-    return localStorage.getItem("sentence_master_sheet_url") || "";
+    return localStorage.getItem("sentence_master_sheet_url") || DEFAULT_SHEET_URL;
   }
 
   function updateSheetUiStatus() {
