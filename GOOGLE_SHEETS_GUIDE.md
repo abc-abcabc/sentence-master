@@ -18,6 +18,7 @@
 ```javascript
 /**
  * 📖 문장 마스터 PRO - 구글 스프레드시트 실시간 연동 스크립트
+ * (학생별 진행률 실시간 갱신 & 출석부 모니터링 지원)
  */
 function doPost(e) {
   try {
@@ -26,16 +27,16 @@ function doPost(e) {
     // 시트가 비어있으면 헤더(제목 행) 자동 생성 및 디자인 적용
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
-        "학습 일시",
+        "최근 갱신 일시",
         "학생 이름",
-        "학습 문장 수",
+        "학습 진행률",
         "정답률",
         "최대 콤보",
-        "총 시도 횟수",
-        "오답 횟수",
+        "총 시도",
+        "오답",
         "틀린 문장 목록",
-        "학습 단계",
-        "학습 모드"
+        "진행 상태",
+        "학습 코스"
       ]);
       
       var headerRange = sheet.getRange(1, 1, 1, 10);
@@ -54,36 +55,64 @@ function doPost(e) {
     }
     
     var timestamp = data.timestamp || Utilities.formatDate(new Date(), "Asia/Seoul", "yyyy-MM-dd HH:mm:ss");
-    var studentName = data.studentName || "익명";
-    var totalSentences = data.totalSentences || 0;
-    var accuracy = data.accuracy || "0%";
+    var studentName = (data.studentName || "익명").trim();
+    var progress = data.progress || (data.totalSentences ? "총 " + data.totalSentences + "문장" : "시작");
+    var accuracy = data.accuracy || "100%";
     var maxStreak = data.maxStreak || 0;
     var totalAttempts = data.totalAttempts || 0;
     var wrongAttempts = data.wrongAttempts || 0;
-    var wrongSentences = data.wrongSentences || "없음 (100% 완벽 통과)";
+    var wrongSentences = data.wrongSentences || "없음";
+    var status = data.status || "진행 중";
     var activeSteps = data.activeSteps || "1~5단계 전체";
-    var mode = data.mode || "일반 학습";
     
-    // 새 행 추가
-    sheet.appendRow([
+    // 기존에 같은 학생 행이 있는지 검색 (있으면 덮어쓰기 업데이트)
+    var lastRow = sheet.getLastRow();
+    var targetRow = -1;
+    if (lastRow > 1) {
+      var nameColumnValues = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
+      for (var i = nameColumnValues.length - 1; i >= 0; i--) {
+        if (nameColumnValues[i][0] && nameColumnValues[i][0].toString().trim() === studentName) {
+          targetRow = i + 2;
+          break;
+        }
+      }
+    }
+    
+    var rowData = [
       timestamp,
       studentName,
-      totalSentences,
+      progress,
       accuracy,
       maxStreak,
       totalAttempts,
       wrongAttempts,
       wrongSentences,
-      activeSteps,
-      mode
-    ]);
+      status,
+      activeSteps
+    ];
+    
+    if (targetRow > 1) {
+      // 기존 학생 행을 실시간으로 갱신!
+      sheet.getRange(targetRow, 1, 1, 10).setValues([rowData]);
+    } else {
+      // 새 학생이면 새 행 추가
+      sheet.appendRow(rowData);
+      targetRow = sheet.getLastRow();
+    }
     
     // 행 스타일 및 정렬
-    var lastRow = sheet.getLastRow();
-    sheet.getRange(lastRow, 1, 1, 10).setVerticalAlignment("middle");
-    sheet.getRange(lastRow, 1, 1, 7).setHorizontalAlignment("center");
-    sheet.getRange(lastRow, 8).setHorizontalAlignment("left"); // 오답 목록은 좌측 정렬
-    sheet.getRange(lastRow, 9, 1, 2).setHorizontalAlignment("center");
+    sheet.getRange(targetRow, 1, 1, 10).setVerticalAlignment("middle");
+    sheet.getRange(targetRow, 1, 1, 7).setHorizontalAlignment("center");
+    sheet.getRange(targetRow, 8).setHorizontalAlignment("left");
+    sheet.getRange(targetRow, 9, 1, 2).setHorizontalAlignment("center");
+    
+    // 상태에 따른 강조 색상 (완료: 초록, 진행 중: 노랑)
+    var statusCell = sheet.getRange(targetRow, 9);
+    if (status.indexOf("완료") !== -1) {
+      statusCell.setBackground("#d1fae5").setFontColor("#065f46").setFontWeight("bold");
+    } else {
+      statusCell.setBackground("#fef3c7").setFontColor("#92400e").setFontWeight("bold");
+    }
     
     return ContentService.createTextOutput(JSON.stringify({ status: "success", message: "기록 완료" }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -95,7 +124,7 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  return ContentService.createTextOutput(JSON.stringify({ status: "ok", message: "문장 마스터 Google Sheets Webhook이 정상 작동 중입니다." }))
+  return ContentService.createTextOutput(JSON.stringify({ status: "ok", message: "문장 마스터 Google Sheets Webhook 정상 작동 중" }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 ```
